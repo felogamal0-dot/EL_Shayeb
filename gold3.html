@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ذهبي – حسابات الذهب والفضة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f5f0;--card:#fff;--tx:#25200f;--mu:#7a735f;--bd:#e7e1d0;--pr:#c1a400;--prt:#fff;--in:#15803d;--ex:#b91c1c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#16130b;--card:#211d12;--tx:#f1ecdc;--mu:#a59f8a;--bd:#38321f;--pr:#facc15;--prt:#2a1d00;--in:#4ade80;--ex:#f87171}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#16130b;--card:#211d12;--tx:#f1ecdc;--mu:#a59f8a;--bd:#38321f;--pr:#facc15;--prt:#2a1d00;--in:#4ade80;--ex:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Tajawal,Tahoma,Arial,sans-serif;font-size:15px}
+.hide{display:none!important}
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:26px;width:100%;max-width:380px}
+h1{margin:0 0 4px;font-size:24px;color:var(--pr)}h2{margin:0 0 12px;font-size:18px}
+.mu{color:var(--mu);font-size:13px}
+label{display:block;margin:10px 0 4px;font-size:13px;color:var(--mu)}
+input,select,textarea{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:9px 16px;background:var(--pr);color:var(--prt);font-weight:700}
+button.g{background:transparent;color:var(--pr);border:1px solid var(--bd)}
+button.s{padding:4px 10px;font-size:12px}
+.full{width:100%;margin-top:16px}
+.pw{position:relative}.pw input{padding-inline-end:64px}
+.pw button{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);padding:4px 8px;background:transparent;color:var(--pr);font-size:12px}
+.err{color:var(--ex);font-size:13px;margin-top:10px;min-height:18px}
+header{background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+header b{color:var(--pr);font-size:18px;margin-inline-end:auto}
+header select{width:auto}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:transparent;color:var(--tx)}
+nav button.on{background:var(--pr);color:var(--prt)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
+.grid .card{margin:0}
+.num{font-size:20px;font-weight:700;margin-top:4px}
+.in{color:var(--in)}.ex{color:var(--ex)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;align-items:end}
+.sc{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{padding:8px;border-bottom:1px solid var(--bd);text-align:start;white-space:nowrap}
+th{color:var(--mu);font-weight:500;font-size:13px}
+tr.c{cursor:pointer}tr.c:hover{background:var(--bg)}
+</style>
+</head>
+<body>
+
+<section id="auth" class="auth">
+ <div class="box">
+  <h1>ذهبي</h1>
+  <div class="mu" id="amode">سجّل دخولك لإدارة الحسابات والفروع</div>
+  <div id="nameWrap" class="hide"><label>الاسم</label><input id="aname" autocomplete="name"></div>
+  <label>البريد الإلكتروني</label><input id="aemail" type="email" autocomplete="email" dir="ltr">
+  <label>كلمة المرور</label>
+  <div class="pw"><input id="apass" type="password" autocomplete="current-password" dir="ltr"><button type="button" id="eye">إظهار</button></div>
+  <div class="err" id="aerr"></div>
+  <button class="full" id="abtn">تسجيل الدخول</button>
+  <button class="full g" id="aswitch">ليس لديك حساب؟ أنشئ حسابًا</button>
+ </div>
+</section>
+
+<section id="app" class="hide">
+ <header>
+  <b>ذهبي</b>
+  <select id="cb"></select>
+  <nav id="nav">
+   <button data-v="dash" class="on">الرئيسية</button>
+   <button data-v="ent">الحركات</button>
+   <button data-v="cli">العملاء</button>
+   <button data-v="inv">الجرد</button>
+   <button data-v="br">الإعدادات</button>
+  </nav>
+  <span class="mu" id="who"></span>
+  <button class="g s" id="out">خروج</button>
+ </header>
+ <main>
+  <div id="v-dash">
+   <div class="grid" id="kpi"></div>
+   <div class="card"><h2>الأسعار (ج.م للجرام)</h2>
+    <div class="row">
+     <div><label>ذهب ٢١ – شراء</label><input id="pBuy" type="number" min="0" dir="ltr"></div>
+     <div><label>ذهب ٢١ – بيع</label><input id="pSell" type="number" min="0" dir="ltr"></div>
+     <div><label>فضة ٩٢٥ – شراء</label><input id="sBuy" type="number" min="0" dir="ltr"></div>
+     <div><label>فضة ٩٢٥ – بيع</label><input id="sSell" type="number" min="0" dir="ltr"></div>
+    </div>
+    <div class="mu" style="margin-top:8px">تُستخدم لتقييم أرصدة العملاء: الرصيد الموجب (لي) بسعر البيع، والسالب (عليّا) بسعر الشراء.</div>
+   </div>
+  </div>
+
+  <div id="v-ent" class="hide">
+   <div class="card">
+    <h2>تسجيل حركة</h2>
+    <div class="row">
+     <div><label>النوع / الصنف</label><select id="eK"></select></div>
+     <div id="gDir"><label>الاتجاه</label><select id="eD"><option value="in">وارد (استلمنا)</option><option value="out">منصرف (سلّمنا)</option></select></div>
+     <div><label>الفرع</label><select id="eB"></select></div>
+     <div id="gBk" class="hide"><label>البنك</label><select id="eBk"></select></div>
+     <div><label>التاريخ</label><input id="eDate" type="date" dir="ltr"></div>
+    </div>
+    <div class="row">
+     <div id="gCl"><label id="lCl">العميل</label><select id="eC"></select></div>
+     <div id="gTo" class="hide"><label>إلى العميل</label><select id="eT"></select></div>
+     <div id="gM" class="hide"><label>المعدن</label><select id="eM"><option value="au">ذهب</option><option value="ag">فضة</option></select></div>
+     <div id="gAmt"><label>المبلغ النقدي (ج.م)</label><input id="eA" type="number" min="0" step="0.01" dir="ltr"></div>
+     <div><label>بيان</label><input id="eN"></div>
+    </div>
+    <div class="row" id="gGold">
+     <div><label>الوزن القائم (جم)</label><input id="eW" type="number" min="0" step="0.01" dir="ltr"></div>
+     <div><label>العيار</label><input id="eKr" type="number" list="kl" value="875" dir="ltr"><datalist id="kl"><option value="875"><option value="750"><option value="999.9"><option value="995"><option value="991"><option value="925"><option value="999"></datalist></div>
+     <div id="gU"><label id="lU">الأجر للجرام</label><input id="eU" type="number" min="0" step="0.01" dir="ltr"></div>
+    </div>
+    <div class="mu" id="eSum" style="margin:10px 0 0"></div>
+    <button id="eAdd" style="margin-top:10px">إضافة</button>
+    <div class="err" id="eErr"></div>
+   </div>
+   <div class="card">
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+     <h2 style="margin:0;margin-inline-end:auto">سجل الحركات</h2>
+     <select id="eFil" style="width:auto"></select>
+     <button class="g s" id="csv">تصدير CSV</button>
+    </div>
+    <div class="sc"><table><thead><tr><th>التاريخ</th><th>الفرع</th><th>النوع</th><th>العميل / البنك</th><th>الوزن</th><th>العيار</th><th>الصافي</th><th>نقدي</th><th></th></tr></thead><tbody id="eBody"></tbody></table></div>
+   </div>
+  </div>
+
+  <div id="v-cli" class="hide">
+   <div class="card"><h2>أرصدة العملاء</h2>
+    <input id="cQ" placeholder="بحث بالاسم" style="margin-bottom:10px">
+    <div class="sc"><table><thead><tr><th>#</th><th>العميل</th><th>ذهب ٢١ (جم)</th><th>فضة ٩٢٥ (جم)</th><th>نقدي</th><th>القيمة الإجمالية</th></tr></thead><tbody id="cBody"></tbody></table></div>
+    <div class="mu" style="margin-top:8px">الأخضر = لي (عليه)، الأحمر = عليّا (له). اضغط على اسم العميل لعرض كشف الحساب.</div>
+   </div>
+   <div class="card hide" id="stm"><h2 id="stT"></h2>
+    <div class="sc"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>بيان</th><th>ذهب</th><th>فضة</th><th>نقدي</th><th>رصيد ذهب</th><th>رصيد فضة</th><th>رصيد نقدي</th></tr></thead><tbody id="stB"></tbody></table></div>
+   </div>
+   <div class="card"><h2>إضافة عملاء</h2>
+    <label>اسم في كل سطر (يمكن لصق عمود من Excel)</label><textarea id="cNew" rows="3"></textarea>
+    <button id="cAdd" style="margin-top:10px">إضافة</button>
+   </div>
+  </div>
+
+  <div id="v-inv" class="hide">
+   <div class="card"><h2>الجرد (بالجرام الصافي: ذهب ٢١ / فضة ٩٢٥)</h2>
+    <div class="sc"><table><thead><tr><th>الصنف</th><th>المعدن</th><th>وارد</th><th>منصرف</th><th>الباقي</th></tr></thead><tbody id="iBody"></tbody></table></div>
+   </div>
+  </div>
+
+  <div id="v-br" class="hide">
+   <div class="card"><h2>إضافة صنف جديد</h2>
+    <div class="row">
+     <div><label>اسم الصنف</label><input id="cName"></div>
+     <div><label>المعدن</label><select id="cM"><option value="au">ذهب</option><option value="ag">فضة</option></select></div>
+     <div><label>العيار الافتراضي</label><input id="cK" type="number" value="875" dir="ltr"></div>
+     <div><label>خانات الحركة</label><select id="cMode"><option value="wage">وزن + عيار + أجر للجرام</option><option value="price">وزن + عيار + سعر للجرام</option><option value="none">وزن + عيار فقط</option></select></div>
+     <button id="cAddCat">إضافة</button>
+    </div>
+    <div class="err" id="cErr"></div>
+   </div>
+   <div class="card"><h2>الأصناف</h2><div class="sc"><table><tbody id="tBody"></tbody></table></div></div>
+   <div class="card"><h2>البنوك</h2>
+    <div class="row"><div><label>اسم البنك</label><input id="kName"></div><button id="kAdd">إضافة</button></div>
+    <div class="sc"><table><tbody id="kBody"></tbody></table></div>
+   </div>
+   <div class="card"><h2>الفروع / الأسواق</h2>
+    <div class="row"><div><label>الاسم</label><input id="bName"></div><button id="bAdd">إضافة</button></div>
+    <div class="sc"><table><tbody id="bBody"></tbody></table></div>
+   </div>
+  </div>
+ </main>
+</section>
+
+<script>
+const $=id=>document.getElementById(id);
+const CK={cash:'نقدية',bank:'بنك',tr:'حوالة',exp:'مصروف'};
+const DIV={au:875,ag:925},MN={au:'ذهب',ag:'فضة'};
+const nf=n=>Number(n).toLocaleString('ar-EG',{maximumFractionDigits:2});
+const fmt=n=>nf(n)+' ج.م';
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ls={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const SEED=[['scrap','كسر ٢١','au',875,'wage'],['scrap18','كسر ١٨','au',750,'wage'],['ingot','سبائك بلدي','au',875,'wage'],['ingot999','سبائك 999.9','au',999.9,'wage'],['bund','بندقي لوكاس','au',875,'wage'],['bund991','بندقي 991','au',991,'wage'],['bund995','بندقي 995','au',995,'wage'],['piece','قطع','au',875,'price'],['silver','فضة','ag',925,'wage']].map(([id,name,m,k,mode])=>({id,name,m,k,mode}));
+let mem={users:{}},reg=false,me=null,D={},cb='',cur='';
+
+async function hash(p){
+ try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('acc|'+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+ catch(e){return btoa(unescape(encodeURIComponent(p)))}
+}
+const users=()=>ls.get('acc_users')||mem.users;
+const save=()=>ls.set('gold2_'+me.email,D);
+
+$('eye').onclick=()=>{const p=$('apass'),h=p.type==='password';p.type=h?'text':'password';$('eye').textContent=h?'إخفاء':'إظهار'};
+function mode(r){
+ reg=r;$('nameWrap').classList.toggle('hide',!r);
+ $('abtn').textContent=r?'إنشاء الحساب':'تسجيل الدخول';
+ $('aswitch').textContent=r?'لديك حساب؟ سجّل دخولك':'ليس لديك حساب؟ أنشئ حسابًا';
+ $('aerr').textContent='';
+}
+$('aswitch').onclick=()=>mode(!reg);
+$('abtn').onclick=async()=>{
+ const email=$('aemail').value.trim().toLowerCase(),pass=$('apass').value,name=$('aname').value.trim(),e=$('aerr');
+ if(!/^\S+@\S+\.\S+$/.test(email))return e.textContent='البريد الإلكتروني غير صالح';
+ if(pass.length<6)return e.textContent='كلمة المرور يجب ألا تقل عن ٦ أحرف';
+ const u=users(),h=await hash(pass);
+ if(reg){
+  if(!name)return e.textContent='أدخل الاسم';
+  if(u[email])return e.textContent='هذا البريد مسجّل بالفعل';
+  u[email]={name,h};mem.users=u;ls.set('acc_users',u);
+ }else if(!u[email]||u[email].h!==h)return e.textContent='بيانات الدخول غير صحيحة';
+ ls.set('acc_session',email);start(email);
+};
+function start(email){
+ const u=users()[email];if(!u)return;
+ me={email};D=ls.get('gold2_'+email)||{};
+ D.branches=D.branches||['سوق نجع حمادي','سوق مصر'];D.banks=D.banks||['البنك الأول'];
+ D.prices=Object.assign({buy:0,sell:0,sBuy:0,sSell:0},D.prices);
+ D.clients=D.clients||[];D.e=D.e||[];
+ if(!D.cats){D.cats=SEED;}else SEED.forEach(s=>{if(!D.cats.some(c=>c.id===s.id)&&!D.catsSeeded)D.cats.push(s)});
+ D.catsSeeded=true;
+ $('auth').classList.add('hide');$('app').classList.remove('hide');
+ $('who').textContent=u.name;cb='';$('eDate').value=new Date().toISOString().slice(0,10);
+ fillSel();kindCh();show('dash');
+}
+$('out').onclick=()=>{ls.set('acc_session',null);me=null;$('app').classList.add('hide');$('auth').classList.remove('hide');$('apass').value='';$('apass').type='password';$('eye').textContent='إظهار';mode(false)};
+
+const V=['dash','ent','cli','inv','br'];
+function show(v){
+ V.forEach(x=>$('v-'+x).classList.toggle('hide',x!==v));
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+ render();
+}
+$('nav').onclick=e=>{if(e.target.dataset.v)show(e.target.dataset.v)};
+$('cb').onchange=()=>{cb=$('cb').value;render()};
+
+const cat=id=>D.cats.find(c=>c.id===id);
+const kname=x=>CK[x.kind]||(cat(x.kind)||{name:x.kind}).name;
+const mOf=x=>x.m||(cat(x.kind)||{}).m||'au';
+function fillSel(){
+ const o=D.branches.map(b=>`<option>${esc(b)}</option>`).join('');
+ $('cb').innerHTML='<option value="">كل الفروع</option>'+o;$('cb').value=cb;$('eB').innerHTML=o;
+ $('eBk').innerHTML=D.banks.map(b=>`<option>${esc(b)}</option>`).join('');
+ const c=D.clients.map(n=>`<option>${esc(n)}</option>`).join('');
+ const a=$('eC').value,b=$('eT').value;$('eC').innerHTML=c;$('eT').innerHTML=c;if(a)$('eC').value=a;if(b)$('eT').value=b;
+ const k=$('eK').value;
+ $('eK').innerHTML='<optgroup label="الأصناف">'+D.cats.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} (${MN[c.m]})</option>`).join('')+'</optgroup><optgroup label="نقدية وأخرى">'+Object.entries(CK).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')+'</optgroup>';
+ if(k&&[...$('eK').options].some(o=>o.value===k))$('eK').value=k;
+ $('eFil').innerHTML='<option value="">كل الأنواع</option>'+[...$('eK').options].map(o=>`<option value="${esc(o.value)}">${esc(o.textContent)}</option>`).join('');
+}
+function kindCh(){
+ const k=$('eK').value,c=cat(k),t=k==='tr';
+ $('gGold').classList.toggle('hide',!(c||t));$('gU').classList.toggle('hide',t||(c&&c.mode==='none'));
+ $('gAmt').classList.toggle('hide',!!c);$('gTo').classList.toggle('hide',!t);$('gM').classList.toggle('hide',!t);
+ $('gBk').classList.toggle('hide',k!=='bank');
+ $('gCl').classList.toggle('hide',k==='exp');$('gDir').classList.toggle('hide',t||k==='exp');
+ $('lCl').textContent=t?'من العميل':'العميل';
+ if(c){$('eKr').value=c.k;$('lU').textContent=c.mode==='price'?'سعر الجرام':'الأجر للجرام'}
+ calc();
+}
+function parse(){
+ const k=$('eK').value,c=cat(k),t=k==='tr',w=+$('eW').value||0,kr=+$('eKr').value||875,u=+$('eU').value||0;
+ const m=c?c.m:t?$('eM').value:'au';
+ const net=(c||t)?+(w*kr/DIV[m]).toFixed(3):0;
+ const cash=c?(c.mode==='price'?+(net*u).toFixed(2):c.mode==='wage'?+(w*u).toFixed(2):0):(+$('eA').value||0);
+ return{k,c,m,net,cash,w,kr,u:c&&c.mode==='none'?0:u};
+}
+function calc(){const p=parse();$('eSum').textContent=p.net||p.cash?`صافي ${p.m==='ag'?'٩٢٥':'٢١'}: ${nf(p.net)} جم · النقدي: ${fmt(p.cash)}`:''}
+$('eK').onchange=kindCh;$('eM').onchange=calc;['eW','eKr','eU','eA'].forEach(i=>$(i).oninput=calc);
+
+$('eAdd').onclick=()=>{
+ const p=parse(),e=$('eErr'),cl=$('eC').value,to=$('eT').value;e.textContent='';
+ if(p.k!=='exp'&&!cl)return e.textContent='أضف عميلًا أولًا من تبويب العملاء';
+ if(p.k==='tr'&&(!to||to===cl))return e.textContent='اختر عميلين مختلفين للحوالة';
+ if(!(p.net>0||p.cash>0))return e.textContent='أدخل الوزن أو المبلغ';
+ if(p.c&&!(p.w>0))return e.textContent='أدخل الوزن';
+ D.e.push({id:Date.now(),date:$('eDate').value,br:$('eB').value,kind:p.k,m:p.m,bank:p.k==='bank'?$('eBk').value:'',dir:p.k==='tr'?'out':$('eD').value,cl:p.k==='exp'?'':cl,to:p.k==='tr'?to:'',w:p.w,kr:p.kr,u:p.u,net:p.net,cash:p.cash,note:$('eN').value.trim()});
+ ['eW','eU','eA','eN'].forEach(i=>$(i).value='');save();render();calc();
+};
+window.delE=id=>{if(confirm('حذف هذه الحركة؟')){D.e=D.e.filter(x=>x.id!==id);save();render()}};
+$('eFil').onchange=render;$('cQ').oninput=render;
+
+$('cAdd').onclick=()=>{
+ $('cNew').value.split('\n').map(s=>s.trim()).filter(Boolean).forEach(n=>{if(!D.clients.includes(n))D.clients.push(n)});
+ $('cNew').value='';save();fillSel();render();
+};
+$('bAdd').onclick=()=>{const n=$('bName').value.trim();if(!n||D.branches.includes(n))return;D.branches.push(n);$('bName').value='';save();fillSel();render()};
+$('kAdd').onclick=()=>{const n=$('kName').value.trim();if(!n||D.banks.includes(n))return;D.banks.push(n);$('kName').value='';save();fillSel();render()};
+$('cAddCat').onclick=()=>{
+ const n=$('cName').value.trim(),e=$('cErr');e.textContent='';
+ if(!n)return e.textContent='أدخل اسم الصنف';
+ if(D.cats.some(c=>c.name===n))return e.textContent='الصنف موجود بالفعل';
+ D.cats.push({id:'c'+Date.now(),name:n,m:$('cM').value,k:+$('cK').value||875,mode:$('cMode').value});
+ $('cName').value='';save();fillSel();kindCh();render();
+};
+window.delBr=i=>{
+ const n=D.branches[i];
+ if(D.branches.length<2)return alert('يجب أن يبقى فرع واحد على الأقل');
+ if(D.e.some(x=>x.br===n))return alert('لا يمكن حذف فرع عليه حركات');
+ D.branches.splice(i,1);if(cb===n)cb='';save();fillSel();render();
+};
+window.delBk=i=>{
+ const n=D.banks[i];
+ if(D.banks.length<2)return alert('يجب أن يبقى بنك واحد على الأقل');
+ if(D.e.some(x=>x.kind==='bank'&&(x.bank||D.banks[0])===n))return alert('لا يمكن حذف بنك عليه حركات');
+ D.banks.splice(i,1);save();fillSel();render();
+};
+window.delCat=i=>{
+ const c=D.cats[i];
+ if(D.e.some(x=>x.kind===c.id))return alert('لا يمكن حذف صنف عليه حركات');
+ D.cats.splice(i,1);save();fillSel();kindCh();render();
+};
+[['pBuy','buy'],['pSell','sell'],['sBuy','sBuy'],['sSell','sSell']].forEach(([i,k])=>$(i).onchange=()=>{D.prices[k]=+$(i).value||0;save();render()});
+window.stm=n=>{cur=n;render();$('stm').scrollIntoView()};
+$('csv').onclick=()=>{
+ const r=['التاريخ,الفرع,النوع,الاتجاه,العميل,إلى,البنك,المعدن,الوزن,العيار,الأجر/السعر,الصافي,النقدي,بيان',...D.e.map(x=>[x.date,x.br,kname(x),x.dir==='in'?'وارد':'منصرف',x.cl,x.to,x.bank||'',MN[mOf(x)],x.w,x.kr,x.u,x.net,x.cash,'"'+(x.note||'').replace(/"/g,'""')+'"'].join(','))];
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+r.join('\n')],{type:'text/csv'}));a.download='entries.csv';a.click();
+};
+
+// وارد = ناقص من رصيد العميل، منصرف = زائد (منطق الشيت)
+function eff(x){
+ if(x.kind==='exp')return[];
+ if(x.kind==='tr')return[[x.cl,-1],[x.to,1]];
+ return[[x.cl,x.dir==='out'?1:-1]];
+}
+function balances(E){
+ const m={};E.forEach(x=>eff(x).forEach(([n,s])=>{const b=m[n]||(m[n]={g:0,s:0,c:0});b[mOf(x)==='ag'?'s':'g']+=s*x.net;b.c+=s*x.cash}));return m;
+}
+const val=b=>{const P=D.prices;return b.c+(b.g>0?b.g*P.sell:b.g*P.buy)+(b.s>0?b.s*P.sSell:b.s*P.sBuy)};
+const cls=n=>n>0?'in':n<0?'ex':'';
+const sgn=x=>x.dir==='in'?1:-1;
+
+function render(){
+ const E=D.e.filter(x=>!cb||x.br===cb),P=D.prices;
+ $('pBuy').value=P.buy||'';$('pSell').value=P.sell||'';$('sBuy').value=P.sBuy||'';$('sSell').value=P.sSell||'';
+ const cashOf=k=>E.filter(x=>x.kind===k).reduce((s,x)=>s+sgn(x)*x.cash,0);
+ const ex=E.filter(x=>x.kind==='exp').reduce((s,x)=>s+x.cash,0),box=cashOf('cash')-ex;
+ const B=balances(E),L=Object.values(B);
+ const dueMe=L.reduce((s,b)=>s+Math.max(0,val(b)),0),dueHim=L.reduce((s,b)=>s+Math.min(0,val(b)),0);
+ const stock=m=>D.cats.filter(c=>c.m===m).reduce((s,c)=>s+E.filter(x=>x.kind===c.id).reduce((a,x)=>a+sgn(x)*x.net,0),0);
+ const kp=(t,v,c='')=>`<div class="card"><div class="mu">${t}</div><div class="num ${c}">${v}</div></div>`;
+ $('kpi').innerHTML=kp('خزنة النقدية',fmt(box),box<0?'ex':'in')
+  +D.banks.map(b=>kp('بنك: '+esc(b),fmt(E.filter(x=>x.kind==='bank'&&(x.bank||D.banks[0])===b).reduce((s,x)=>s+sgn(x)*x.cash,0)))).join('')
+  +kp('المصروفات',fmt(ex),'ex')+kp('مخزون الذهب (٢١)',nf(stock('au'))+' جم')+kp('مخزون الفضة (٩٢٥)',nf(stock('ag'))+' جم')
+  +kp('لي عند العملاء',fmt(dueMe),'in')+kp('عليّا للعملاء',fmt(-dueHim),'ex');
+ const f=$('eFil').value,R=E.filter(x=>!f||x.kind===f).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||b.id-a.id);
+ $('eBody').innerHTML=R.length?R.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.br)}</td><td>${esc(kname(x))}${x.kind==='tr'||x.kind==='exp'?'':x.dir==='in'?' (وارد)':' (منصرف)'}</td><td>${esc(x.kind==='tr'?x.cl+' ← '+x.to:x.kind==='bank'?(x.bank||D.banks[0])+(x.cl?' · '+x.cl:''):x.cl||x.note)}</td><td>${x.net?nf(x.w):''}</td><td>${x.net?nf(x.kr):''}</td><td>${x.net?nf(x.net)+(mOf(x)==='ag'?' ف':''):''}</td><td>${x.cash?nf(x.cash):''}</td><td><button class="g s" onclick="delE(${x.id})">حذف</button></td></tr>`).join(''):'<tr><td colspan="9" class="mu">لا توجد حركات</td></tr>';
+ const q=$('cQ').value.trim(),names=D.clients.filter(n=>!q||n.includes(q));
+ $('cBody').innerHTML=names.length?names.map((n,i)=>{const b=B[n]||{g:0,s:0,c:0},v=val(b);
+  return`<tr class="c" onclick="stm(this.dataset.n)" data-n="${esc(n)}"><td>${i+1}</td><td>${esc(n)}</td><td class="${cls(b.g)}">${nf(b.g)}</td><td class="${cls(b.s)}">${nf(b.s)}</td><td class="${cls(b.c)}">${fmt(b.c)}</td><td class="${cls(v)}">${fmt(v)}</td></tr>`}).join(''):'<tr><td colspan="6" class="mu">أضف عملاء من الأسفل</td></tr>';
+ $('stm').classList.toggle('hide',!cur||!D.clients.includes(cur));
+ if(cur&&D.clients.includes(cur)){
+  $('stT').textContent='كشف حساب: '+cur;let g=0,s=0,c=0;
+  const rows=E.filter(x=>eff(x).some(([n])=>n===cur)).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||a.id-b.id);
+  $('stB').innerHTML=rows.map(x=>{const z=eff(x).find(([n])=>n===cur)[1],ag=mOf(x)==='ag',dn=z*x.net;if(ag)s+=dn;else g+=dn;c+=z*x.cash;
+   return`<tr><td>${esc(x.date)}</td><td>${esc(kname(x))}</td><td>${esc(x.note)}</td><td>${x.net&&!ag?nf(dn):''}</td><td>${x.net&&ag?nf(dn):''}</td><td>${x.cash?nf(z*x.cash):''}</td><td class="${cls(g)}">${nf(g)}</td><td class="${cls(s)}">${nf(s)}</td><td class="${cls(c)}">${nf(c)}</td></tr>`}).join('')||'<tr><td colspan="9" class="mu">لا توجد حركات</td></tr>';
+ }
+ const T={au:[0,0],ag:[0,0]};
+ $('iBody').innerHTML=D.cats.map(c=>{const A=E.filter(x=>x.kind===c.id),i=A.filter(x=>x.dir==='in').reduce((s,x)=>s+x.net,0),o=A.filter(x=>x.dir==='out').reduce((s,x)=>s+x.net,0);T[c.m][0]+=i;T[c.m][1]+=o;
+  return`<tr><td>${esc(c.name)}</td><td>${MN[c.m]}</td><td>${nf(i)}</td><td>${nf(o)}</td><td class="${i-o<0?'ex':''}">${nf(i-o)}</td></tr>`}).join('')
+  +['au','ag'].map(m=>`<tr><th>إجمالي ${MN[m]}</th><th></th><th>${nf(T[m][0])}</th><th>${nf(T[m][1])}</th><th>${nf(T[m][0]-T[m][1])}</th></tr>`).join('');
+ $('tBody').innerHTML=D.cats.map((c,i)=>`<tr><td>${esc(c.name)}</td><td>${MN[c.m]}</td><td>عيار ${nf(c.k)}</td><td>${{wage:'أجر للجرام',price:'سعر للجرام',none:'وزن فقط'}[c.mode]}</td><td><button class="g s" onclick="delCat(${i})">حذف</button></td></tr>`).join('');
+ $('kBody').innerHTML=D.banks.map((b,i)=>`<tr><td>${esc(b)}</td><td><button class="g s" onclick="delBk(${i})">حذف</button></td></tr>`).join('');
+ $('bBody').innerHTML=D.branches.map((b,i)=>`<tr><td>${esc(b)}</td><td>${D.e.filter(x=>x.br===b).length} حركة</td><td><button class="g s" onclick="delBr(${i})">حذف</button></td></tr>`).join('');
+}
+const s=ls.get('acc_session');if(s)start(s);
+</script>
+</body>
+</html>
